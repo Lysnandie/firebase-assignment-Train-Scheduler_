@@ -35,13 +35,12 @@ $(document).ready(function() {
         console.log(frequency);
 
         //=====stores variables/user inputs into firebase database====
-        database.ref().push({
+      database.ref().push({
           trainName: trainName,
           destination: destination,
           trainTime: trainTime,
           frequency: frequency
-
-        });
+      });
 
         //=====Time calculations======
 
@@ -58,36 +57,37 @@ $(document).ready(function() {
           //current time
           var currentTime = moment();
 
-         
-          var dConverted = moment(childSnapshot.val().trainTime, 'HH:mm').subtract(1, 'years');
+          //converts first time
 
-          var trainTime = moment(dConverted).format('HH:mm');
-
+          var currentTimeConverted = moment(childSnapshot.val().trainTime, "hh:mm").subtract(1, "years");
+          console.log(currentTimeConverted);
+          var trainTimes = moment(currentTimeConverted).format("hh:mm");
+          console.log(trainTimes);
 
           //time differences
-          var tConverted = moment(trainTime, 'HH:mm').subtract(1, 'years');
-          var tDifference = moment().diff(moment(tConverted), 'minutes');
-
+          var tConverted = moment(trainTimes, "hh:mm").subtract(1, "years");
+          var tDifference = moment().diff(moment(tConverted), "minutes");
+          console.log(tDifference);
           //REMAINDER
           var tRemainder = tDifference % freq;
-
+          console.log(tRemainder);
           //minutes until next train
           var minsAway = freq - tRemainder;
-
+          console.log(minsAway);
           //next train time
-          var nextTrain = moment().add(minsAway, 'minutes');
-
+          var nextTrain = moment().add(minsAway, "minutes");
+          console.log(nextTrain);
 
 
 
           //=====append inputs to table=====
           database.ref().on("child_added", function(snapshot) {
-            console.log(snapshot);
+
             $("#add-train").append("<tr><td>" + snapshot.val().trainName + "</td>" +
               "<td>" + snapshot.val().destination + "</td>" +
               "<td>" + "Every" + " " + snapshot.val().frequency + " " + "mins" + "</td>" +
-              "<td>" + snapshot.val().nextArrival + "</td>" +
-              "<td>" + snapshot.val().minsAway + " " + "mins until arrival" + "</td>" +
+              "<td>" + nextTrain + "</td>" +
+              "<td>" + minsAway + " " + "mins until arrival" + "</td>" +
               "</td></tr>");
 
 
